@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" data-framework="angularjs">
+	<head>
+		<meta charset="utf-8">
+		<title>TodoMVC</title>
+		<link rel="stylesheet" type="text/css" href="css/app.css">
+		<style>[ng-cloak] { display: none; }</style>
+	</head>
+	<body ng-app="todomvc">
+		<ng-view />
+
+		<script type="text/ng-template" id="todomvc-index.html">
+			<section id="todoapp">
+				<header id="header">
+					<h1>todos</h1>
+					<form id="todo-form" ng-submit="vm.addTodo()">
+						<input id="new-todo" placeholder="What needs to be done?" ng-model="vm.newTodoText">
+					</form>
+				</header>
+				<section id="main" ng-show="vm.todos.length">
+					<input id="toggle-all" type="checkbox" ng-model="vm.allChecked" ng-click="vm.markAll(vm.allChecked)">
+					<label for="toggle-all">Mark all as complete</label>
+					<ul id="todo-list">
+						<li ng-repeat="todo in vm.todos | filter:vm.statusFilter track by $index" ng-class="{ completed: todo.completed, editing: todo == vm.editedTodo }">
+						<div class="view">
+							<input class="toggle" type="checkbox" ng-model="todo.completed">
+							<label ng-dblclick="vm.editTodo(todo)">{{todo.body}}</label>
+							<button class="destroy" ng-click="vm.destroy(todo)"></button>
+						</div>
+						<form ng-submit="vm.doneEditing(todo)">
+							<input class="edit" ng-trim="false" ng-model="todo.body" todo-escape="vm.revertEditing(todo)" ng-blur="vm.doneEditing(todo)" todo-focus="todo == vm.editedTodo">
+						</form>
+					</ul>
+				</section>
+				<footer id="footer" ng-show="vm.todos.length" ng-cloak>
+					<span id="todo-count">
+					<strong>{{ vm.remainingCount }}</strong>
+						<ng-pluralize count="vm.remainingCount" when="{ one: 'item left', other: 'items left' }"></ng-pluralize>
+					</span>
+					<ul id="filters">
+						<li>
+							<a ng-class="{selected: vm.status == ''} " href="#/">All</a>
+						</li>
+						<li>
+							<a ng-class="{selected: vm.status == 'active'}" href="#/active">Active</a>
+						</li>
+						<li>
+							<a ng-class="{selected: vm.status == 'completed'}" href="#/completed">Completed</a>
+						</li>
+					</ul>
+					<button id="clear-completed" ng-click="vm.clearCompletedTodos()" ng-show="vm.completedCount">Clear completed({{ vm.completedCount }})</button>
+				</footer>
+			</section>
+		</script>
+		<script src="js/base.js"></script>
+		<script src="angular/angular.min.js"></script>
+		<script src="angular/angular-route.js"></script>
+		<script src="js/Routes/app.js"></script>
+	    <script src="js/Controllers/TodosController.js"></script>
+	    <script src="js/Directives/TodoEscape.js"></script>
+	    <script src="js/Directives/TodoFocus.js"></script>
+	    <script src="js/Factories/TodoStorage.js"></script>
+	</body>
+</html>
